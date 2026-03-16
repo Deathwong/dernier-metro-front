@@ -10,6 +10,7 @@ pipeline {
         APP_NAME = 'dernier-metro-front'
         CONTAINER_NAME = 'dernier-metro-front'
         IMAGE_TAG = "${APP_NAME}:${BUILD_NUMBER}"
+        VITE_API_BASE_URL = credentials('VITE_API_BASE_URL')
     }
 
     stages {
