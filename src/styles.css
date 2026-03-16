@@ -119,8 +119,21 @@ button {
 
 select {
   padding: 0 16px;
-  background: rgba(255, 255, 255, 0.08);
+  background: #132844;
   color: #f5f7fb;
+  border: 1px solid rgba(136, 213, 255, 0.22);
+  appearance: none;
+}
+
+select option {
+  background: #132844;
+  color: #f5f7fb;
+}
+
+select:focus,
+button:focus {
+  outline: 2px solid #88d5ff;
+  outline-offset: 2px;
 }
 
 button {

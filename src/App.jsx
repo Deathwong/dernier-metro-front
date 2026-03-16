@@ -88,9 +88,11 @@ export default function App() {
           </div>
 
           <form className="search-form" onSubmit={handleSearch}>
-            <label className="field">
+            <label className="field" htmlFor="station-select">
               <span>Station</span>
               <select
+                id="station-select"
+                name="station"
                 value={selectedStation}
                 onChange={(event) => setSelectedStation(event.target.value)}
                 disabled={loadingStations}
