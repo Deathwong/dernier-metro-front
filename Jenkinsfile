@@ -20,24 +20,29 @@ pipeline {
             }
         }
 
-        stage('Frontend Checks') {
+        stage('Install') {
             steps {
-                sh """
-                    docker run --rm \\
-                      -u root:root \\
-                      -v "\${WORKSPACE}:/app" \\
-                      -w /app \\
-                      node:20-alpine \\
-                      sh -c 'npm ci && npm run build'
-                """
+                sh 'npm ci'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 sh """
-                    docker build \
-                      --build-arg VITE_API_BASE_URL=${VITE_API_BASE_URL} \
+                    docker build \\
+                      --build-arg VITE_API_BASE_URL=${VITE_API_BASE_URL} \\
                       -t ${IMAGE_TAG} .
                 """
             }
@@ -50,10 +55,10 @@ pipeline {
             steps {
                 sh """
                     docker rm -f ${CONTAINER_NAME} || true
-                    docker run -d \
-                      --name ${CONTAINER_NAME} \
-                      --restart unless-stopped \
-                      -p 80:80 \
+                    docker run -d \\
+                      --name ${CONTAINER_NAME} \\
+                      --restart unless-stopped \\
+                      -p 80:80 \\
                       ${IMAGE_TAG}
                 """
             }
