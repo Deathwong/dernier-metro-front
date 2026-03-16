@@ -23,9 +23,10 @@ pipeline {
         stage('Frontend Checks') {
             steps {
                 sh '''
+                    WS=$(pwd)
                     docker run --rm \
                       -u root:root \
-                      -v "$(pwd):/app" \
+                      -v "$WS:/app" \
                       -w /app \
                       node:20-alpine \
                       sh -c "npm ci && npm run build"
