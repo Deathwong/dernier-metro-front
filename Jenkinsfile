@@ -25,7 +25,7 @@ pipeline {
                 sh '''
                     docker run --rm \
                       -u root:root \
-                      -v "$WORKSPACE":/app \
+                      -v "{$WORKSPACE"}:/app" \
                       -w /app \
                       node:20-alpine \
                       sh -lc "npm ci && npm test && npm run build"
