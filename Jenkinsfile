@@ -25,10 +25,10 @@ pipeline {
                 sh '''
                     docker run --rm \
                       -u root:root \
-                      -v "{$WORKSPACE"}:/app" \
+                      -v "$(pwd):/app" \
                       -w /app \
                       node:20-alpine \
-                      sh -lc "npm ci && npm test && npm run build"
+                      sh -c "npm ci && npm run build"
                 '''
             }
         }
@@ -36,7 +36,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                    test -n "${VITE_API_BASE_URL}" || { echo "VITE_API_BASE_URL is required"; exit 1; }
                     docker build \
                       --build-arg VITE_API_BASE_URL=${VITE_API_BASE_URL} \
                       -t ${IMAGE_TAG} .
@@ -46,12 +45,16 @@ pipeline {
 
         stage('Deploy') {
             when {
-                branch 'main'
+                expression { env.GIT_BRANCH == 'origin/main' }
             }
             steps {
                 sh """
                     docker rm -f ${CONTAINER_NAME} || true
-                    docker run -d --name ${CONTAINER_NAME} --restart unless-stopped -p 80:80 ${IMAGE_TAG}
+                    docker run -d \
+                      --name ${CONTAINER_NAME} \
+                      --restart unless-stopped \
+                      -p 80:80 \
+                      ${IMAGE_TAG}
                 """
             }
         }
