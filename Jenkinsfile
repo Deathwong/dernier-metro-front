@@ -20,20 +20,17 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Frontend Checks') {
+            agent {
+                docker {
+                    image 'node:20-alpine'
+                    args '-u root:root'
+                    reuseNode true
+                }
+            }
             steps {
                 sh 'npm ci'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
                 sh 'npm test'
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
                 sh 'npm run build'
             }
         }
