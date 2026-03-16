@@ -21,17 +21,15 @@ pipeline {
         }
 
         stage('Frontend Checks') {
-            agent {
-                docker {
-                    image 'node:20-alpine'
-                    args '-u root:root'
-                    reuseNode true
-                }
-            }
             steps {
-                sh 'npm ci'
-                sh 'npm test'
-                sh 'npm run build'
+                sh '''
+                    docker run --rm \
+                      -u root:root \
+                      -v "$WORKSPACE":/app \
+                      -w /app \
+                      node:20-alpine \
+                      sh -lc "npm ci && npm test && npm run build"
+                '''
             }
         }
 
